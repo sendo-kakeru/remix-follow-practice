@@ -1,9 +1,32 @@
 import { NextUIProvider } from "@nextui-org/react";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigate } from "@remix-run/react";
-import stylesheet from "~/tailwind.css?url";
+import { LoaderFunctionArgs, json } from "@remix-run/node";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
+import stylesheet from "~/styles/tailwind.css?url";
+import { remixAuthenticator } from "./features/auth/instances/authenticator.server";
+import { hasProfile } from "./features/user/functions/hasProfile";
+import { httpStatus } from "./configs/http-status";
+import Sidebar from "./components/layouts/sidebar/Sidebar";
 
 export function links() {
   return [{ rel: "stylesheet", href: stylesheet }];
+}
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const me = await remixAuthenticator.isAuthenticated(request);
+  if (me && !hasProfile(me)) {
+    throw json({ message: "ユーザーのプロフィールが存在しません。" }, httpStatus.NOT_FOUND);
+  }
+  return json({
+    me,
+  });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -25,10 +48,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   return (
     <NextUIProvider navigate={navigate}>
-      <Outlet />
+      <div className="flex">
+        <Sidebar me={loaderData.me} />
+        <Outlet />
+      </div>
     </NextUIProvider>
   );
 }
