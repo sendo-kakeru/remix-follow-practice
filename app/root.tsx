@@ -1,10 +1,10 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { NextUIProvider } from "@nextui-org/react";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigate } from "@remix-run/react";
+import stylesheet from "~/tailwind.css?url";
+
+export function links() {
+  return [{ rel: "stylesheet", href: stylesheet }];
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,5 +25,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const navigate = useNavigate();
+  return (
+    <NextUIProvider navigate={navigate}>
+      <Outlet />
+    </NextUIProvider>
+  );
 }

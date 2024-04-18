@@ -1,5 +1,7 @@
 node_modules
-
+/.pnpm-store
 /.cache
 /build
+/public/build
 .env
+/sessions
