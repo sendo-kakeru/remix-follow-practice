@@ -7,11 +7,13 @@ init:
 	sleep 10
 	@make migrate-dev
 up:
-	${DOCKER_CMD} up -d
+	${DOCKER_CMD} up
 restart:
 	${DOCKER_CMD} restart
 down:
 	${DOCKER_CMD} down
+stop:
+	${DOCKER_CMD} stop
 destroy:
 	${DOCKER_CMD} down --rmi all --volumes --remove-orphans
 ps:
