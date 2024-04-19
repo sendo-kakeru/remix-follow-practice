@@ -49,7 +49,7 @@ export default function ProfileContent(props: {
               size="sm"
               underline="hover"
             >
-              フォロワー<b>12</b>人
+              フォロワー<b>{props.user.followers.length}</b>人
             </Link>
             <Link
               href={`/@${props.user.slug}/following`}
@@ -57,7 +57,7 @@ export default function ProfileContent(props: {
               size="sm"
               underline="hover"
             >
-              フォロー<b>8</b>人
+              フォロー<b>{props.user.followings.length}</b>人
             </Link>
           </div>
           {props.me?.id !== props.user.id ? (
