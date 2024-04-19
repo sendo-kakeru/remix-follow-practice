@@ -1,10 +1,10 @@
-import { Button, Card, CardBody, Link, User } from "@nextui-org/react";
+import { Card, CardBody, Link, User } from "@nextui-org/react";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Link as RemixLink, json, useLoaderData } from "@remix-run/react";
 import { httpStatus } from "~/configs/http-status";
 import { remixAuthenticator } from "~/features/auth/instances/authenticator.server";
+import FollowButton from "~/features/follow/components/FollowButton";
 import { hasProfile } from "~/features/user/functions/hasProfile";
-import { useHover } from "~/hooks/useHover";
 import { prisma } from "~/instances/prisma.server";
 
 export const meta: MetaFunction = () => {
@@ -25,10 +25,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 export default function Index() {
   const loaderData = useLoaderData<typeof loader>();
-  const { isHover, handleMouseOver, handleMouseLeave } = useHover();
 
   return (
-    <div className="flex flex-col gap-2 p-12 w-[600px]">
+    <div className="flex flex-col mx-auto gap-2 p-12 w-[600px]">
       {loaderData.users.map((user) => (
         <Card to={`/${user.slug}`} isHoverable key={user.id} as={RemixLink}>
           <CardBody className="flex-row justify-between items-center">
@@ -58,21 +57,7 @@ export default function Index() {
                 </Link>
               </div>
             </div>
-            {loaderData.me?.id !== user.id && (
-              <Button
-                color={isHover ? "danger" : "primary"}
-                radius="full"
-                size="sm"
-                type="submit"
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-                variant={isHover ? "bordered" : "solid"}
-                className="font-bold px-8 w-fit @md:ml-auto"
-              >
-                フォロー
-                {isHover ? "解除" : "する"}
-              </Button>
-            )}
+            {loaderData.me?.id !== user.id && <FollowButton />}
           </CardBody>
         </Card>
       ))}
