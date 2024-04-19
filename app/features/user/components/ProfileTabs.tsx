@@ -14,7 +14,7 @@ export default function ProfileTabs(props: {
     User & {
       authenticators: Authenticator[];
       profile: Profile;
-      following: Follow[];
+      followings: Follow[];
       followers: Follow[];
     }
   >;

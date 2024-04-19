@@ -8,7 +8,7 @@ const authenticator = new Authenticator<
   User & {
     authenticators: AuthenticatorType[];
     profile: Profile | null;
-    following: Follow[];
+    followings: Follow[];
     followers: Follow[];
   }
 >(authSessionStorage);

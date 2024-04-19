@@ -16,7 +16,15 @@ import { httpStatus } from "./configs/http-status";
 import Sidebar from "./components/layouts/sidebar/Sidebar";
 
 export function links() {
-  return [{ rel: "stylesheet", href: stylesheet }];
+  return [
+    { rel: "stylesheet", href: stylesheet },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+    {
+      href: "https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap",
+      rel: "stylesheet",
+    },
+  ];
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {

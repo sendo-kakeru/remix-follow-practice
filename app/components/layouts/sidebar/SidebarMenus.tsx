@@ -9,7 +9,7 @@ export default function SidebarMenus(props: {
     User & {
       authenticators: Authenticator[];
       profile: Profile;
-      following: Follow[];
+      followings: Follow[];
       followers: Follow[];
     }
   > | null;

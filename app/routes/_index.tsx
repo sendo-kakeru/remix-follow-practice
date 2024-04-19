@@ -1,8 +1,7 @@
 import { Card, CardBody, Link, User } from "@nextui-org/react";
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, Link as RemixLink, json, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { json, useLoaderData } from "@remix-run/react";
 import { httpStatus } from "~/configs/http-status";
-import { authGuard } from "~/features/auth/functions/guard.server";
 import { remixAuthenticator } from "~/features/auth/instances/authenticator.server";
 import FollowButton from "~/features/follow/components/FollowButton";
 import { hasProfile } from "~/features/user/functions/hasProfile";
@@ -14,22 +13,14 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const users = await prisma.user.findMany({
-    include: { authenticators: true, profile: true, followers: true, following: true },
+    include: { authenticators: true, profile: true, followers: true, followings: true },
   });
   const me = await remixAuthenticator.isAuthenticated(request);
   if (me && !hasProfile(me)) {
     throw json({ message: "ユーザーのプロフィールが存在しません。" }, httpStatus.NOT_FOUND);
   }
-
-  if (me && !hasProfile(me)) {
-    throw json({ message: "ユーザーのプロフィールが存在しません。" }, httpStatus.NOT_FOUND);
-  }
   return json({ me, users });
 }
-
-// export async function action({ request }: ActionFunctionArgs) {
-// const me = await authGuard(request)
-// }
 
 export default function Index() {
   const loaderData = useLoaderData<typeof loader>();
@@ -37,12 +28,16 @@ export default function Index() {
   return (
     <div className="flex flex-col mx-auto gap-2 p-12 w-[600px]">
       {loaderData.users.map((user) => (
-        <Card to={`/${user.slug}`} isHoverable key={user.id} as={RemixLink}>
+        <Card key={user.id}>
           <CardBody className="flex-row justify-between items-center">
             <div className="flex flex-col gap-2">
               <User
                 name={user.profile?.name}
-                description={`@${user.slug}`}
+                description={
+                  <Link href={`/${user.slug}`} size="sm">
+                    @{user.slug}
+                  </Link>
+                }
                 avatarProps={{ src: user.profile?.image }}
                 className="justify-start"
               />
@@ -53,7 +48,7 @@ export default function Index() {
                   size="sm"
                   underline="hover"
                 >
-                  フォロワー<b>12</b>人
+                  フォロワー<b>{user.followers.length}</b>人
                 </Link>
                 <Link
                   href={`/@${user.slug}/following`}
@@ -61,15 +56,11 @@ export default function Index() {
                   size="sm"
                   underline="hover"
                 >
-                  フォロー<b>8</b>人
+                  フォロー<b>{user.followings.length}</b>人
                 </Link>
               </div>
             </div>
-            {loaderData.me?.id !== user.id && (
-              <Form method="patch">
-                <FollowButton />
-              </Form>
-            )}
+            {loaderData.me?.id !== user.id && <FollowButton me={loaderData.me} user={user} />}
           </CardBody>
         </Card>
       ))}

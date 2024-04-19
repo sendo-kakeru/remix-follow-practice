@@ -6,7 +6,7 @@ export const googleStrategy = new GoogleStrategy<
   User & {
     authenticators: Authenticator[];
     profile: Profile | null;
-    following: Follow[];
+    followings: Follow[];
     followers: Follow[];
   }
 >(
@@ -24,7 +24,7 @@ export const googleStrategy = new GoogleStrategy<
         authenticators: true,
         profile: true,
         followers: true,
-        following: true,
+        followings: true,
       },
     });
     if (me) {
@@ -46,7 +46,7 @@ export const googleStrategy = new GoogleStrategy<
           authenticators: true,
           profile: true,
           followers: true,
-          following: true,
+          followings: true,
         },
       });
     }

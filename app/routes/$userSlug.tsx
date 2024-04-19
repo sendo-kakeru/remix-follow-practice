@@ -20,7 +20,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const slug = params.userSlug.substring(1);
   const user = await prisma.user.findUnique({
     where: { slug },
-    include: { authenticators: true, profile: true, followers: true, following: true },
+    include: { authenticators: true, profile: true, followers: true, followings: true },
   });
   if (!user) {
     throw json({ message: "ユーザが存在しません。" }, httpStatus.NOT_FOUND);

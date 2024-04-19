@@ -7,7 +7,7 @@ init:
 	sleep 10
 	@make migrate-dev
 up:
-	${DOCKER_CMD} up
+	${DOCKER_CMD} up -d
 restart:
 	${DOCKER_CMD} restart
 down:

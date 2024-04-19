@@ -7,7 +7,7 @@ export const webAuthnStrategy = new WebAuthnStrategy<
   User & {
     authenticators: Authenticator[];
     profile: Profile | null;
-    following: Follow[];
+    followings: Follow[];
     followers: Follow[];
   }
 >(
@@ -48,7 +48,7 @@ export const webAuthnStrategy = new WebAuthnStrategy<
     getUserByUsername(email) {
       return prisma.user.findUnique({
         where: { email },
-        include: { authenticators: true, profile: true, followers: true, following: true },
+        include: { authenticators: true, profile: true, followers: true, followings: true },
       });
     },
     getAuthenticatorById(id) {
@@ -61,7 +61,7 @@ export const webAuthnStrategy = new WebAuthnStrategy<
       | (User & {
           authenticators: Authenticator[];
           profile: Profile | null;
-          following: Follow[];
+          followings: Follow[];
           followers: Follow[];
         })
       | null = null;
@@ -74,7 +74,7 @@ export const webAuthnStrategy = new WebAuthnStrategy<
       }
       me = await prisma.user.findUnique({
         where: { email: username },
-        include: { authenticators: true, profile: true, followers: true, following: true },
+        include: { authenticators: true, profile: true, followers: true, followings: true },
       });
 
       if (me) throw new Error("このメールアドレスは既に使用されています。");
@@ -95,14 +95,14 @@ export const webAuthnStrategy = new WebAuthnStrategy<
             },
           },
         },
-        include: { authenticators: true, profile: true, followers: true, following: true },
+        include: { authenticators: true, profile: true, followers: true, followings: true },
       });
     } else if (type === "authentication") {
       // ユーザー認証時
       if (!savedAuthenticator) throw new Error("認証機器が見つかりません。");
       me = await prisma.user.findUnique({
         where: { id: savedAuthenticator.userId },
-        include: { authenticators: true, profile: true, followers: true, following: true },
+        include: { authenticators: true, profile: true, followers: true, followings: true },
       });
     }
 
