@@ -1,8 +1,15 @@
 import { GoogleStrategy } from "remix-auth-google";
 import { prisma } from "../../../instances/prisma.server";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 
-export const googleStrategy = new GoogleStrategy<User & { profile: Profile | null }>(
+export const googleStrategy = new GoogleStrategy<
+  User & {
+    authenticators: Authenticator[];
+    profile: Profile | null;
+    following: Follow[];
+    followers: Follow[];
+  }
+>(
   {
     clientID: process.env.GOOGLE_CLIENT_ID ?? "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
@@ -14,7 +21,10 @@ export const googleStrategy = new GoogleStrategy<User & { profile: Profile | nul
         id: profile.id,
       },
       include: {
+        authenticators: true,
         profile: true,
+        followers: true,
+        following: true,
       },
     });
     if (me) {
@@ -33,7 +43,10 @@ export const googleStrategy = new GoogleStrategy<User & { profile: Profile | nul
           },
         },
         include: {
+          authenticators: true,
           profile: true,
+          followers: true,
+          following: true,
         },
       });
     }

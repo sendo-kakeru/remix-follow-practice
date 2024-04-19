@@ -1,5 +1,5 @@
 import { Tab, Tabs } from "@nextui-org/react";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
 import { useLocation } from "@remix-run/react";
 
@@ -9,7 +9,16 @@ const tabs = [
   { title: "いいね", path: "/likes", key: "likes" },
 ] as const;
 
-export default function ProfileTabs(props: { user: SerializeFrom<User & { profile: Profile }> }) {
+export default function ProfileTabs(props: {
+  user: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  >;
+}) {
   const { pathname } = useLocation();
   const currentPathKey = pathname.split("/")[2];
   return (

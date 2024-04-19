@@ -9,14 +9,28 @@ import {
 } from "@nextui-org/react";
 import { ArrowLeftIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "@remix-run/react";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { handleLogout } from "~/features/auth/functions/handleLogout";
 import { useHover } from "~/hooks/useHover";
 import { SerializeFrom } from "@remix-run/node";
 
-export default function ProfileNavBar(props: {
-  user: SerializeFrom<User & { profile: Profile }>;
-  me: SerializeFrom<User & { profile: Profile }> | null;
+export default function ProfileContent(props: {
+  user: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  >;
+  me: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  > | null;
 }) {
   const navigate = useNavigate();
   const { isHover, handleMouseOver, handleMouseLeave } = useHover();

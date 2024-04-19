@@ -1,10 +1,19 @@
 import { Image } from "@nextui-org/react";
 import { Link } from "@remix-run/react";
 import SidebarMenus from "./SidebarMenus";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
 
-export default function Sidebar(props: { me: SerializeFrom<User & { profile: Profile }> | null }) {
+export default function Sidebar(props: {
+  me: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  > | null;
+}) {
   return (
     <div className="w-[224px] xl:w-[335px] hidden md:flex flex-shrink-0">
       <aside className="w-[224px] xl:w-[335px] fixed flex-col h-[100vh] flex pt-2 px-3 pb-5 border-r">

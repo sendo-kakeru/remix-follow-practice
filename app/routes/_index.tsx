@@ -1,7 +1,8 @@
 import { Card, CardBody, Link, User } from "@nextui-org/react";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Link as RemixLink, json, useLoaderData } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { Form, Link as RemixLink, json, useLoaderData } from "@remix-run/react";
 import { httpStatus } from "~/configs/http-status";
+import { authGuard } from "~/features/auth/functions/guard.server";
 import { remixAuthenticator } from "~/features/auth/instances/authenticator.server";
 import FollowButton from "~/features/follow/components/FollowButton";
 import { hasProfile } from "~/features/user/functions/hasProfile";
@@ -12,7 +13,9 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const users = await prisma.user.findMany({ include: { profile: true } });
+  const users = await prisma.user.findMany({
+    include: { authenticators: true, profile: true, followers: true, following: true },
+  });
   const me = await remixAuthenticator.isAuthenticated(request);
   if (me && !hasProfile(me)) {
     throw json({ message: "ユーザーのプロフィールが存在しません。" }, httpStatus.NOT_FOUND);
@@ -23,6 +26,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
   return json({ me, users });
 }
+
+// export async function action({ request }: ActionFunctionArgs) {
+// const me = await authGuard(request)
+// }
+
 export default function Index() {
   const loaderData = useLoaderData<typeof loader>();
 
@@ -57,7 +65,11 @@ export default function Index() {
                 </Link>
               </div>
             </div>
-            {loaderData.me?.id !== user.id && <FollowButton />}
+            {loaderData.me?.id !== user.id && (
+              <Form method="patch">
+                <FollowButton />
+              </Form>
+            )}
           </CardBody>
         </Card>
       ))}

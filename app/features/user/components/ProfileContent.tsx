@@ -1,12 +1,26 @@
 import { Button, Image, Link } from "@nextui-org/react";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
 import { Link as RemixLink } from "@remix-run/react";
 import { useHover } from "~/hooks/useHover";
 
 export default function ProfileContent(props: {
-  user: SerializeFrom<User & { profile: Profile }>;
-  me: SerializeFrom<User & { profile: Profile }> | null;
+  user: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  >;
+  me: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  > | null;
 }) {
   const { isHover, handleMouseOver, handleMouseLeave } = useHover();
   return (

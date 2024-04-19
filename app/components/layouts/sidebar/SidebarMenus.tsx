@@ -1,18 +1,19 @@
-import { Badge, Listbox, ListboxItem, useDisclosure } from "@nextui-org/react";
+import { Badge, Listbox, ListboxItem } from "@nextui-org/react";
 import SidebarUser from "./SidebarUser";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
-import {
-  ArrowUpOnSquareStackIcon,
-  BellIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function SidebarMenus(props: {
-  me: SerializeFrom<User & { profile: Profile }> | null;
+  me: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  > | null;
 }) {
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-
   return (
     <>
       <div className="flex flex-col">

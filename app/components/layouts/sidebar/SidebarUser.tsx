@@ -4,7 +4,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { Avatar, Button, Listbox, ListboxItem, ListboxSection, Tooltip } from "@nextui-org/react";
-import { Profile, User } from "@prisma/client";
+import { Authenticator, Follow, Profile, User } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
 import { Link, useNavigate } from "@remix-run/react";
 import { ReactNode } from "react";
@@ -12,7 +12,14 @@ import { handleLogout } from "~/features/auth/functions/handleLogout";
 
 export default function SidebarUser(props: {
   children?: ReactNode & JSX.Element[];
-  me: SerializeFrom<User & { profile: Profile }> | null;
+  me: SerializeFrom<
+    User & {
+      authenticators: Authenticator[];
+      profile: Profile;
+      following: Follow[];
+      followers: Follow[];
+    }
+  > | null;
 }) {
   const navigate = useNavigate();
   return (
